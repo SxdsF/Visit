@@ -1,5 +1,10 @@
 package com.godmaster.visit;
 
-public class RequestParams {
+import java.util.HashMap;
+import java.util.Map;
 
+public class RequestParams {
+	public Map<String, String> getParams() {
+		return new HashMap<>();
+	}
 }

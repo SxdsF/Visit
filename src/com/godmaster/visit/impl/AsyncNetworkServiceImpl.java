@@ -17,8 +17,21 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	@Override
+	public void asyncGet(String uri, RequestParams params,
+			AsyncCallback callback) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public void asyncGet(URI uri, RequestParams params, AsyncCallback callback,
 			long time, TimeUnit tu) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void asyncGet(URI uri, RequestParams params, AsyncCallback callback) {
 		// TODO Auto-generated method stub
 
 	}
@@ -31,10 +44,22 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	@Override
+	public void asyncPost(String uri, RequestParams params,
+			AsyncCallback callback) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public void asyncPost(URI uri, RequestParams params,
 			AsyncCallback callback, long time, TimeUnit tu) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
+	public void asyncPost(URI uri, RequestParams params, AsyncCallback callback) {
+		// TODO Auto-generated method stub
+
+	}
 }
