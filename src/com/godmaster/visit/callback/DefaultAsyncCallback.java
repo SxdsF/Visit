@@ -1,6 +1,9 @@
 package com.godmaster.visit.callback;
 
 import java.lang.ref.SoftReference;
+
+import org.apache.http.HttpEntity;
+
 import com.godmaster.visit.Event;
 import com.godmaster.visit.callback.exception.NoProcessorException;
 import com.godmaster.visit.process.Processor;
@@ -75,7 +78,8 @@ public abstract class DefaultAsyncCallback<T> implements AsyncCallback {
 				Event success = (Event) message.obj;
 				if (success != null) {
 					if (this.processor != null) {
-						T t = this.processor.<T> process(success.entity);
+						T t = this.processor
+								.<T, HttpEntity> process(success.entity);
 						this.onSuccess(success != null ? t : null);
 					} else {
 						throw new NoProcessorException();
