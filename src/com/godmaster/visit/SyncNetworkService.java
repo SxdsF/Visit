@@ -1,29 +1,21 @@
 package com.godmaster.visit;
 
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
-
-import com.godmaster.visit.process.Processor;
+import java.util.concurrent.Future;
+import com.godmaster.visit.process.impl.DataProcessor;
 
 public interface SyncNetworkService extends NetworkService {
 
-	public <T> T syncGet(String uri, RequestParams params, Processor processor,
-			long time, TimeUnit tu);
+	public Future<Response> syncGet(String uri);
 
-	public <T> T syncGet(String uri, RequestParams params, Processor processor);
+	public Future<Response> syncGet(String uri, RequestParams params);
 
-	public <T> T syncGet(URI uri, RequestParams params, Processor processor,
-			long time, TimeUnit tu);
+	public <T> Future<T> syncGet(String uri, DataProcessor<T> processor);
 
-	public <T> T syncGet(URI uri, RequestParams params, Processor processor);
+	public <T> Future<T> syncGet(String uri, RequestParams params,
+			DataProcessor<T> processor);
 
-	public <T> T syncPost(String uri, RequestParams params,
-			Processor processor, long time, TimeUnit tu);
+	public Future<Response> syncPost(String uri, RequestParams params);
 
-	public <T> T syncPost(String uri, RequestParams params, Processor processor);
-
-	public <T> T syncPost(URI uri, RequestParams params, Processor processor,
-			long time, TimeUnit tu);
-
-	public <T> T syncPost(URI uri, RequestParams params, Processor processor);
+	public <T> Future<T> syncPost(String uri, RequestParams params,
+			DataProcessor<T> processor);
 }

@@ -15,11 +15,11 @@ import android.util.Log;
 public abstract class DefaultAsyncCallback<T> implements AsyncCallback {
 
 	private Handler handler;
-	private Processor processor;
+	private Processor<T, HttpEntity> processor;
 
 	private static final String TAG = "DefaultAsyncCallback";
 
-	public void setProcessor(Processor processor) {
+	public void setProcessor(Processor<T, HttpEntity> processor) {
 		this.processor = processor;
 	}
 
@@ -27,7 +27,7 @@ public abstract class DefaultAsyncCallback<T> implements AsyncCallback {
 		this(null);
 	}
 
-	public DefaultAsyncCallback(Processor processor) {
+	public DefaultAsyncCallback(Processor<T, HttpEntity> processor) {
 		this.processor = processor;
 		this.handler = new ResponseHandler<T>(this, Looper.getMainLooper());
 	}
@@ -78,8 +78,7 @@ public abstract class DefaultAsyncCallback<T> implements AsyncCallback {
 				Event success = (Event) message.obj;
 				if (success != null) {
 					if (this.processor != null) {
-						T t = this.processor
-								.<T, HttpEntity> process(success.entity);
+						T t = this.processor.process(success.entity);
 						this.onSuccess(success != null ? t : null);
 					} else {
 						throw new NoProcessorException();
