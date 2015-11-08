@@ -1,21 +1,22 @@
 package com.godmaster.visit;
 
 import java.util.concurrent.Future;
-import com.godmaster.visit.process.impl.DataProcessor;
+import com.godmaster.visit.process.impl.EntityProcessor;
 
-public interface SyncNetworkService extends NetworkService {
+public abstract class SyncNetworkService extends AbstractNetworkService {
 
-	public Future<Response> syncGet(String uri);
+	public abstract Future<Response> syncGet(String uri);
 
-	public Future<Response> syncGet(String uri, RequestParams params);
+	public abstract Future<Response> syncGet(String uri, RequestParams params);
 
-	public <T> Future<T> syncGet(String uri, DataProcessor<T> processor);
+	public abstract <T> Future<T> syncGet(String uri,
+			EntityProcessor<T> processor);
 
-	public <T> Future<T> syncGet(String uri, RequestParams params,
-			DataProcessor<T> processor);
+	public abstract <T> Future<T> syncGet(String uri, RequestParams params,
+			EntityProcessor<T> processor);
 
-	public Future<Response> syncPost(String uri, RequestParams params);
+	public abstract Future<Response> syncPost(String uri, RequestParams params);
 
-	public <T> Future<T> syncPost(String uri, RequestParams params,
-			DataProcessor<T> processor);
+	public abstract <T> Future<T> syncPost(String uri, RequestParams params,
+			EntityProcessor<T> processor);
 }

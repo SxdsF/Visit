@@ -6,9 +6,9 @@ import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import android.util.Log;
 
-public class DefaultDataProcessor extends DataProcessor<String> {
+public class StringEntityProcessor extends EntityProcessor<String> {
 
-	private static final String TAG = "DefaultDataProcessor";
+	private static final String TAG = "StringEntityProcessor";
 
 	@Override
 	public String process(HttpEntity v) {

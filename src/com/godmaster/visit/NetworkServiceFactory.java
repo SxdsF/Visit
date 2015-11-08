@@ -1,6 +1,7 @@
 package com.godmaster.visit;
 
-import com.godmaster.visit.impl.AsyncNetworkService;
+import com.godmaster.visit.impl.AsyncNetworkServiceImpl;
+import com.godmaster.visit.impl.SyncNetworkServiceImpl;
 
 public class NetworkServiceFactory {
 	public static final NetworkService create(UseModeEnum ue) {
@@ -8,13 +9,11 @@ public class NetworkServiceFactory {
 		if (ue != null) {
 			switch (ue) {
 			case ASYNC:
-				ns = new AsyncNetworkService();
+				ns = new AsyncNetworkServiceImpl();
 				break;
 			case SYNC:
+				ns = new SyncNetworkServiceImpl();
 				break;
-			default:
-				break;
-
 			}
 		}
 		return ns;
