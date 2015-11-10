@@ -10,7 +10,7 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
 
-public final class DefaultBasicMethods {
+public final class BasicMethods {
 	/**
 	 * 
 	 * @param client
