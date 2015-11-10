@@ -2,10 +2,13 @@ package com.godmaster.visit.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClients;
 import android.util.Log;
 import com.godmaster.visit.RequestParams;
@@ -24,7 +27,7 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 	private static final String TAG = "SyncNetworkService";
 
 	public SyncNetworkServiceImpl() {
-		this(HttpClients.createDefault());
+		this(HttpClients.createSystem());
 	}
 
 	public SyncNetworkServiceImpl(HttpClient client) {
@@ -43,9 +46,17 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 		Response response = null;
 		if (!this.isClosed()) {
 			try {
-				response = BasicMethods.request(this.client,
-						RequestBuilder.get().build(),
-						new DefaultResponseHandler());
+				RequestBuilder get = RequestBuilder.get().setUri(uri);
+				if (params != null) {
+					List<NameValuePair> paramsList = params.getParamsList();
+					if (paramsList != null && !paramsList.isEmpty()) {
+						get.addParameters(paramsList
+								.toArray(new NameValuePair[paramsList.size()]));
+					}
+				}
+				response = BasicMethods.request(this.client, get.build(),
+						new DefaultResponseHandler(),
+						HttpClientContext.create());
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getMessage());
@@ -70,9 +81,17 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 		T response = null;
 		if (!this.isClosed()) {
 			try {
-				response = BasicMethods.request(this.client,
-						RequestBuilder.get().build(),
-						new ProcessResponseHandler<T>(processor));
+				RequestBuilder get = RequestBuilder.get().setUri(uri);
+				if (params != null) {
+					List<NameValuePair> paramsList = params.getParamsList();
+					if (paramsList != null && !paramsList.isEmpty()) {
+						get.addParameters(paramsList
+								.toArray(new NameValuePair[paramsList.size()]));
+					}
+				}
+				response = BasicMethods.request(this.client, get.build(),
+						new ProcessResponseHandler<T>(processor),
+						HttpClientContext.create());
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getMessage());
@@ -90,9 +109,13 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 		Response response = null;
 		if (!this.isClosed()) {
 			try {
-				response = BasicMethods.request(this.client,
-						RequestBuilder.post().build(),
-						new DefaultResponseHandler());
+				RequestBuilder post = RequestBuilder.post().setUri(uri);
+				if (params != null) {
+					post.setEntity(params.createFormEntity());
+				}
+				response = BasicMethods.request(this.client, post.build(),
+						new DefaultResponseHandler(),
+						HttpClientContext.create());
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getMessage());
@@ -111,9 +134,13 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 		T response = null;
 		if (!this.isClosed()) {
 			try {
-				response = BasicMethods.request(this.client,
-						RequestBuilder.post().build(),
-						new ProcessResponseHandler<T>(processor));
+				RequestBuilder post = RequestBuilder.post().setUri(uri);
+				if (params != null) {
+					post.setEntity(params.createFormEntity());
+				}
+				response = BasicMethods.request(this.client, post.build(),
+						new ProcessResponseHandler<T>(processor),
+						HttpClientContext.create());
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getMessage());

@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -28,7 +29,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	private static final String TAG = "AsyncNetworkService";
 
 	public AsyncNetworkServiceImpl() {
-		this(HttpClients.createDefault(), Executors.newFixedThreadPool(3));
+		this(HttpClients.createSystem(), Executors.newFixedThreadPool(3));
 	}
 
 	public AsyncNetworkServiceImpl(HttpClient client) {
@@ -36,7 +37,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	public AsyncNetworkServiceImpl(ExecutorService service) {
-		this(HttpClients.createDefault(), service);
+		this(HttpClients.createSystem(), service);
 	}
 
 	public AsyncNetworkServiceImpl(HttpClient client, ExecutorService service) {
@@ -56,7 +57,15 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		// TODO Auto-generated method stub
 		Future<Response> future = null;
 		if (!this.isClosed()) {
-			future = this.freService.execute(RequestBuilder.get().build(),
+			RequestBuilder get = RequestBuilder.get().setUri(uri);
+			if (params != null) {
+				List<NameValuePair> paramsList = params.getParamsList();
+				if (paramsList != null && !paramsList.isEmpty()) {
+					get.addParameters(paramsList
+							.toArray(new NameValuePair[paramsList.size()]));
+				}
+			}
+			future = this.freService.execute(get.build(),
 					HttpClientContext.create(), new DefaultResponseHandler(),
 					callback);
 		}
@@ -76,9 +85,17 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		// TODO Auto-generated method stub
 		Future<T> future = null;
 		if (!this.isClosed()) {
-			future = this.freService.execute(RequestBuilder.get().build(),
-					HttpClientContext.create(), new ProcessResponseHandler<T>(
-							processor), callback);
+			RequestBuilder get = RequestBuilder.get().setUri(uri);
+			if (params != null) {
+				List<NameValuePair> paramsList = params.getParamsList();
+				if (paramsList != null && !paramsList.isEmpty()) {
+					get.addParameters(paramsList
+							.toArray(new NameValuePair[paramsList.size()]));
+				}
+			}
+			future = this.freService.execute(get.build(), HttpClientContext
+					.create(), new ProcessResponseHandler<T>(processor),
+					callback);
 		}
 		return future;
 	}
@@ -96,9 +113,13 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		// TODO Auto-generated method stub
 		Future<T> future = null;
 		if (!this.isClosed()) {
-			future = this.freService.execute(RequestBuilder.post().build(),
-					HttpClientContext.create(), new ProcessResponseHandler<T>(
-							processor), callback);
+			RequestBuilder post = RequestBuilder.post().setUri(uri);
+			if (params != null) {
+				post.setEntity(params.createFormEntity());
+			}
+			future = this.freService.execute(post.build(), HttpClientContext
+					.create(), new ProcessResponseHandler<T>(processor),
+					callback);
 		}
 		return future;
 	}

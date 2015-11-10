@@ -1,23 +1,24 @@
 package com.godmaster.visit.process.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.http.HttpEntity;
-import org.apache.http.ParseException;
-import org.apache.http.util.EntityUtils;
+
 import android.util.Log;
 
-public class StringEntityProcessor extends EntityProcessor<String> {
+public class HttpEntity2InputStreamProcessor extends
+		EntityProcessor<InputStream> {
 
-	private static final String TAG = "StringEntityProcessor";
+	private static final String TAG = "HttpEntity2InputStreamProcessor";
 
 	@Override
-	public String process(HttpEntity v) {
+	public InputStream process(HttpEntity v) {
 		// TODO Auto-generated method stub
-		String result = null;
+		InputStream is = null;
 		if (v != null) {
 			try {
-				result = EntityUtils.toString(v, "UTF-8");
-			} catch (ParseException e) {
+				is = v.getContent();
+			} catch (IllegalStateException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getMessage());
 			} catch (IOException e) {
@@ -25,7 +26,7 @@ public class StringEntityProcessor extends EntityProcessor<String> {
 				Log.e(TAG, e.getMessage());
 			}
 		}
-		return result;
+		return is;
 	}
 
 }

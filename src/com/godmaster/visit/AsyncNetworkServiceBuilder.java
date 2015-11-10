@@ -8,7 +8,7 @@ public class AsyncNetworkServiceBuilder {
 	private HttpClient client;
 	private ExecutorService service;
 
-	public final AsyncNetworkServiceBuilder create() {
+	public static final AsyncNetworkServiceBuilder create() {
 		return new AsyncNetworkServiceBuilder();
 	}
 

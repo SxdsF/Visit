@@ -6,7 +6,7 @@ import com.godmaster.visit.impl.SyncNetworkServiceImpl;
 public class SyncNetworkServiceBuilder {
 	private HttpClient client;
 
-	public static SyncNetworkServiceBuilder create() {
+	public static final SyncNetworkServiceBuilder create() {
 		return new SyncNetworkServiceBuilder();
 	}
 
