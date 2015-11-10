@@ -9,8 +9,14 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 
 	protected final Handler handler;
 
-	private AbstractCallback() {
+	public AbstractCallback() {
+		// 20151110 sunbowen 默认的采用main looper来初始化handler，回调消息就可以在UI线程（主线程）执行。
 		this.handler = new ResponseHandler<T>(this, Looper.getMainLooper());
+	}
+
+	public AbstractCallback(Looper looper) {
+		// 20151110 sunbowen 如果传入looper，则用此looper初始化，回调消息就可以在用户指定的线程执行。
+		this.handler = new ResponseHandler<T>(this, looper);
 	}
 
 	@Override
