@@ -1,6 +1,8 @@
 package com.godmaster.visit;
 
-import com.godmaster.visit.process.impl.EntityProcessor;
+import com.godmaster.visit.parse.impl.HttpResponseParser;
+import com.godmaster.visit.process.Processor;
+import com.godmaster.visit.process.impl.HttpEntityProcessor;
 
 /**
  * A synchronous service of network.
@@ -39,7 +41,21 @@ public interface SyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T> T syncGet(String uri, EntityProcessor<T> processor);
+	public <T> T syncGet(String uri, HttpEntityProcessor<T> processor);
+
+	/**
+	 * The same as above.
+	 * 
+	 * @param uri
+	 *            the uri in form of String.
+	 * @param parser
+	 *            the parser of HttpResponse.
+	 * @param processor
+	 *            the response processor.
+	 * @return the value of your custom.
+	 */
+	public <T, V> T syncGet(String uri, HttpResponseParser<V> parser,
+			Processor<T, V> processor);
 
 	/**
 	 * The same as above.
@@ -53,7 +69,23 @@ public interface SyncNetworkService extends NetworkService {
 	 * @return the value of your custom.
 	 */
 	public <T> T syncGet(String uri, RequestParams params,
-			EntityProcessor<T> processor);
+			HttpEntityProcessor<T> processor);
+
+	/**
+	 * The same as above.
+	 * 
+	 * @param uri
+	 *            the uri in form of String.
+	 * @param params
+	 *            the request params.
+	 * @param parser
+	 *            the parser of HttpResponse.
+	 * @param processor
+	 *            the response processor.
+	 * @return the value of your custom.
+	 */
+	public <T, V> T syncGet(String uri, RequestParams params,
+			HttpResponseParser<V> parser, Processor<T, V> processor);
 
 	/**
 	 * A synchronous "post" method based on HTTP/HTTPS.
@@ -78,5 +110,21 @@ public interface SyncNetworkService extends NetworkService {
 	 * @return the value of your custom.
 	 */
 	public <T> T syncPost(String uri, RequestParams params,
-			EntityProcessor<T> processor);
+			HttpEntityProcessor<T> processor);
+
+	/**
+	 * The same as above.
+	 * 
+	 * @param uri
+	 *            the uri in form of String.
+	 * @param params
+	 *            the request params.
+	 * @param parser
+	 *            the parser of HttpResponse.
+	 * @param processor
+	 *            the response processor.
+	 * @return the value of your custom.
+	 */
+	public <T, V> T syncPost(String uri, RequestParams params,
+			HttpResponseParser<V> parser, Processor<T, V> processor);
 }

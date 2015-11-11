@@ -7,7 +7,7 @@ import org.apache.http.HttpEntity;
 import android.util.Log;
 
 public class HttpEntity2InputStreamProcessor extends
-		EntityProcessor<InputStream> {
+		HttpEntityProcessor<InputStream> {
 
 	private static final String TAG = "HttpEntity2InputStreamProcessor";
 

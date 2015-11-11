@@ -4,7 +4,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 
-public class DefaultResponseParser extends ResponseParser {
+public class HttpResponse2HttpEntityParser extends
+		HttpResponseParser<HttpEntity> {
 
 	@Override
 	public HttpEntity parse(HttpResponse response) {
@@ -13,14 +14,16 @@ public class DefaultResponseParser extends ResponseParser {
 		if (response != null) {
 			StatusLine sl = response.getStatusLine();
 			if (sl != null) {
-				ResponseParser parser = ResponseParserFactory.create(sl
-						.getStatusCode());
+				HttpResponseParser<?> parser = HttpResponseParserFactory
+						.create(sl.getStatusCode());
 				if (parser != null) {
-					entity = parser.parse(response);
+					if (parser.parse(response) != null
+							&& parser.parse(response) instanceof HttpEntity) {
+						entity = (HttpEntity) parser.parse(response);
+					}
 				}
 			}
 		}
 		return entity;
 	}
-
 }

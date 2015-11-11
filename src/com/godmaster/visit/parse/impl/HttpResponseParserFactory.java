@@ -3,9 +3,9 @@ package com.godmaster.visit.parse.impl;
 import org.apache.http.HttpStatus;
 import com.godmaster.visit.parse.ResponseEnum;
 
-public class ResponseParserFactory {
-	static final ResponseParser create(int statusCode) {
-		ResponseParser parser = null;
+public class HttpResponseParserFactory {
+	static final HttpResponseParser<?> create(int statusCode) {
+		HttpResponseParser<?> parser = null;
 		if (0 < statusCode && statusCode < HttpStatus.SC_OK) {
 			// 20151107 sunbowen 在这里返回1xx
 			parser = create(ResponseEnum.INFORMATIONAL);
@@ -31,30 +31,30 @@ public class ResponseParserFactory {
 		return parser;
 	}
 
-	static final ResponseParser create(ResponseEnum responseEnum) {
-		ResponseParser parser = null;
+	static final HttpResponseParser<?> create(ResponseEnum responseEnum) {
+		HttpResponseParser<?> parser = null;
 		if (responseEnum != null) {
 			switch (responseEnum) {
 			case CLIENT_ERROR:
-				parser = new ResponseParser4ClientError();
+				parser = new HttpResponseParser4ClientError();
 				break;
 			case INFORMATIONAL:
-				parser = new ResponseParser4Informational();
+				parser = new HttpResponseParser4Informational();
 				break;
 			case NO_RESPONSE:
-				parser = new ResponseParser4NoResponse();
+				parser = new HttpResponseParser4NoResponse();
 				break;
 			case REDIRECTION:
-				parser = new ResponseParser4Redirection();
+				parser = new HttpResponseParser4Redirection();
 				break;
 			case SERVER_ERROR:
-				parser = new ResponseParser4ServerError();
+				parser = new HttpResponseParser4ServerError();
 				break;
 			case SUCCESS:
-				parser = new ResponseParser4Success();
+				parser = new HttpResponseParser4Success();
 				break;
 			default:
-				parser = new ResponseParser4NoResponse();
+				parser = new HttpResponseParser4NoResponse();
 				break;
 			}
 		}

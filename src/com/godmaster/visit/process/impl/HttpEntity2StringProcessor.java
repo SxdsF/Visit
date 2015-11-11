@@ -6,7 +6,7 @@ import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import android.util.Log;
 
-public class HttpEntity2StringProcessor extends EntityProcessor<String> {
+public class HttpEntity2StringProcessor extends HttpEntityProcessor<String> {
 
 	private static final String TAG = "HttpEntity2StringProcessor";
 

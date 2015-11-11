@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-public class HttpEntity2BitmapProcessor extends EntityProcessor<Bitmap> {
+public class HttpEntity2BitmapProcessor extends HttpEntityProcessor<Bitmap> {
 
 	private static final String TAG = "HttpEntity2BitmapProcessor";
 
