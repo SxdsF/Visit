@@ -1,6 +1,7 @@
 package com.sxdsf.visit.callback;
 
 import java.lang.ref.SoftReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -8,6 +9,8 @@ import android.os.Message;
 public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 
 	protected final Handler handler;
+	private final AtomicInteger currentStatus = new AtomicInteger(
+			Status.INITIAL.getStatusCode());
 
 	public AbstractCallback() {
 		// 20151110 sunbowen 默认的采用main looper来初始化handler，回调消息就可以在UI线程（主线程）执行。
@@ -23,31 +26,39 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 	public void completed(T result) {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送成功的消息
-		this.<T> sendEvent(Event.SUCCESS, result);
+		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
+				Status.ISCOMPLETED.getStatusCode())) {
+			this.<T> sendEvent(Event.SUCCESS, result);
 
-		// 20151109 sunbowen 在此发送完成的消息
-		this.sendEvent(Event.COMPLETED, null);
-
+			// 20151109 sunbowen 在此发送完成的消息
+			this.sendEvent(Event.COMPLETED, null);
+		}
 	}
 
 	@Override
 	public void failed(Exception ex) {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送失败的消息
-		this.<Exception> sendEvent(Event.FAILURE, ex);
+		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
+				Status.ISFAILED.getStatusCode())) {
+			this.<Exception> sendEvent(Event.FAILURE, ex);
 
-		// 20151109 sunbowen 在此发送完成的消息
-		this.sendEvent(Event.COMPLETED, null);
+			// 20151109 sunbowen 在此发送完成的消息
+			this.sendEvent(Event.COMPLETED, null);
+		}
 	}
 
 	@Override
 	public void cancelled() {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送取消的消息
-		this.sendEvent(Event.CANCELLED, null);
+		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
+				Status.ISCANCELLED.getStatusCode())) {
+			this.sendEvent(Event.CANCELLED, null);
 
-		// 20151109 sunbowen 在此发送完成的消息
-		this.sendEvent(Event.COMPLETED, null);
+			// 20151109 sunbowen 在此发送完成的消息
+			this.sendEvent(Event.COMPLETED, null);
+		}
 	}
 
 	private <V> void sendEvent(int code, V v) {
@@ -100,6 +111,19 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 					callback.handleMessage(msg);
 				}
 			}
+		}
+	}
+
+	private enum Status {
+		INITIAL(0), ISCOMPLETED(1 << 0), ISFAILED(1 << 1), ISCANCELLED(1 << 2);
+		private int statusCode;
+
+		private Status(int statusCode) {
+			this.statusCode = statusCode;
+		}
+
+		public int getStatusCode() {
+			return statusCode;
 		}
 	}
 

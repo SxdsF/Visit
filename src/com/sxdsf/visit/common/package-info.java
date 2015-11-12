@@ -5,4 +5,4 @@
  * @author sunbowen
  *
  */
-package com.sxdsf.visit.impl;
+package com.sxdsf.visit.common;

@@ -1,4 +1,4 @@
-package com.sxdsf.visit.impl;
+package com.sxdsf.visit.service.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -12,16 +12,16 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClients;
 import android.util.Log;
 
-import com.sxdsf.visit.RequestParams;
-import com.sxdsf.visit.Response;
-import com.sxdsf.visit.SyncNetworkService;
 import com.sxdsf.visit.basic.BasicMethods;
-import com.sxdsf.visit.handler.CommonProcessResponseHandler;
-import com.sxdsf.visit.handler.DefaultResponseHandler;
-import com.sxdsf.visit.handler.HttpEntityProcessResponseHandler;
+import com.sxdsf.visit.common.CommonProcessResponseHandler;
+import com.sxdsf.visit.common.DefaultResponseHandler;
+import com.sxdsf.visit.common.HttpEntityProcessResponseHandler;
+import com.sxdsf.visit.common.RequestParams;
+import com.sxdsf.visit.common.Response;
 import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;
+import com.sxdsf.visit.service.SyncNetworkService;
 
 public class SyncNetworkServiceImpl implements SyncNetworkService {
 

@@ -1,11 +1,10 @@
-package com.sxdsf.visit.handler;
+package com.sxdsf.visit.common;
 
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-
-import com.sxdsf.visit.Response;
+import org.apache.http.util.EntityUtils;
 
 public class DefaultResponseHandler implements ResponseHandler<Response> {
 
@@ -14,7 +13,7 @@ public class DefaultResponseHandler implements ResponseHandler<Response> {
 			throws ClientProtocolException, IOException {
 		// TODO Auto-generated method stub
 		return arg0 != null ? new Response(arg0.getStatusLine(),
-				arg0.getEntity()) : null;
+				EntityUtils.toByteArray(arg0.getEntity())) : null;
 	}
 
 }

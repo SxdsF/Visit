@@ -1,13 +1,12 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.common;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 
 public class Response {
 	private StatusLine statusLine;
-	private HttpEntity entity;
+	private byte[] entity;
 
-	public Response(StatusLine statusLine, HttpEntity entity) {
+	public Response(StatusLine statusLine, byte[] entity) {
 		this.statusLine = statusLine;
 		this.entity = entity;
 	}
@@ -20,11 +19,11 @@ public class Response {
 		this.statusLine = statusLine;
 	}
 
-	public HttpEntity getEntity() {
+	public byte[] getEntity() {
 		return entity;
 	}
 
-	public void setEntity(HttpEntity entity) {
+	public void setEntity(byte[] entity) {
 		this.entity = entity;
 	}
 

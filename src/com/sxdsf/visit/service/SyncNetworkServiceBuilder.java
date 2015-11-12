@@ -1,8 +1,8 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.service;
 
 import org.apache.http.client.HttpClient;
 
-import com.sxdsf.visit.impl.SyncNetworkServiceImpl;
+import com.sxdsf.visit.service.impl.SyncNetworkServiceImpl;
 
 public class SyncNetworkServiceBuilder {
 	private HttpClient client;

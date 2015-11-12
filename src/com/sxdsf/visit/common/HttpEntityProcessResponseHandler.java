@@ -1,4 +1,4 @@
-package com.sxdsf.visit.handler;
+package com.sxdsf.visit.common;
 
 import java.io.IOException;
 import org.apache.http.HttpEntity;

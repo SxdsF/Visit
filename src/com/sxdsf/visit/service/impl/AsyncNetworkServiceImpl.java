@@ -1,10 +1,10 @@
-package com.sxdsf.visit.impl;
+package com.sxdsf.visit.service.impl;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -13,17 +13,17 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.apache.http.impl.client.HttpClients;
 import android.util.Log;
-
-import com.sxdsf.visit.AsyncNetworkService;
-import com.sxdsf.visit.RequestParams;
-import com.sxdsf.visit.Response;
 import com.sxdsf.visit.callback.AbstractCallback;
-import com.sxdsf.visit.handler.CommonProcessResponseHandler;
-import com.sxdsf.visit.handler.DefaultResponseHandler;
-import com.sxdsf.visit.handler.HttpEntityProcessResponseHandler;
+import com.sxdsf.visit.common.CommonProcessResponseHandler;
+import com.sxdsf.visit.common.DefaultResponseHandler;
+import com.sxdsf.visit.common.HttpEntityProcessResponseHandler;
+import com.sxdsf.visit.common.RequestHandler;
+import com.sxdsf.visit.common.RequestParams;
+import com.sxdsf.visit.common.Response;
 import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;
+import com.sxdsf.visit.service.AsyncNetworkService;
 
 public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 
@@ -49,17 +49,17 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	@Override
-	public Future<Response> asyncGet(String uri,
+	public RequestHandler<Response> asyncGet(String uri,
 			AbstractCallback<Response> callback) {
 		// TODO Auto-generated method stub
 		return this.asyncGet(uri, null, callback);
 	}
 
 	@Override
-	public Future<Response> asyncGet(String uri, RequestParams params,
+	public RequestHandler<Response> asyncGet(String uri, RequestParams params,
 			AbstractCallback<Response> callback) {
 		// TODO Auto-generated method stub
-		Future<Response> future = null;
+		RequestHandler<Response> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
 			if (params != null) {
@@ -69,40 +69,25 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 							.toArray(new NameValuePair[paramsList.size()]));
 				}
 			}
-			future = this.freService.execute(get.build(),
-					HttpClientContext.create(), new DefaultResponseHandler(),
-					callback);
+			future = new RequestHandler<Response>(this.freService.execute(
+					get.build(), HttpClientContext.create(),
+					new DefaultResponseHandler(), callback));
 		}
 		return future;
 	}
 
 	@Override
-	public <T> Future<T> asyncGet(String uri, AbstractCallback<T> callback,
-			HttpEntityProcessor<T> processor) {
-		// TODO Auto-generated method stub
-		return this.asyncGet(uri, null, callback, processor);
-	}
-
-	@Override
-	public <T, V> Future<T> asyncGet(String uri, AbstractCallback<T> callback,
-			HttpResponseParser<V> parser, Processor<T, V> processor) {
-		// TODO Auto-generated method stub
-		Future<T> future = null;
-		if (!this.isClosed()) {
-			RequestBuilder get = RequestBuilder.get().setUri(uri);
-			future = this.freService.execute(get.build(),
-					HttpClientContext.create(),
-					new CommonProcessResponseHandler<T, V>(parser, processor),
-					callback);
-		}
-		return future;
-	}
-
-	@Override
-	public <T> Future<T> asyncGet(String uri, RequestParams params,
+	public <T> RequestHandler<T> asyncGet(String uri,
 			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
 		// TODO Auto-generated method stub
-		Future<T> future = null;
+		return this.asyncGet(uri, (RequestParams) null, callback, processor);
+	}
+
+	@Override
+	public <T> RequestHandler<T> asyncGet(String uri, RequestParams params,
+			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
+		// TODO Auto-generated method stub
+		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
 			if (params != null) {
@@ -112,20 +97,29 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 							.toArray(new NameValuePair[paramsList.size()]));
 				}
 			}
-			future = this.freService.execute(get.build(),
+			future = new RequestHandler<T>(this.freService.execute(get.build(),
 					HttpClientContext.create(),
 					new HttpEntityProcessResponseHandler<T>(processor),
-					callback);
+					callback));
 		}
 		return future;
 	}
 
 	@Override
-	public <T, V> Future<T> asyncGet(String uri, RequestParams params,
+	public <T, V> RequestHandler<T> asyncGet(String uri,
 			AbstractCallback<T> callback, HttpResponseParser<V> parser,
 			Processor<T, V> processor) {
 		// TODO Auto-generated method stub
-		Future<T> future = null;
+		return this.asyncGet(uri, (RequestParams) null, callback, parser,
+				processor);
+	}
+
+	@Override
+	public <T, V> RequestHandler<T> asyncGet(String uri, RequestParams params,
+			AbstractCallback<T> callback, HttpResponseParser<V> parser,
+			Processor<T, V> processor) {
+		// TODO Auto-generated method stub
+		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
 			if (params != null) {
@@ -135,60 +129,77 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 							.toArray(new NameValuePair[paramsList.size()]));
 				}
 			}
-			future = this.freService.execute(get.build(),
+			future = new RequestHandler<T>(this.freService.execute(get.build(),
 					HttpClientContext.create(),
 					new CommonProcessResponseHandler<T, V>(parser, processor),
-					callback);
+					callback));
 		}
 		return future;
 	}
 
 	@Override
-	public Future<Response> asyncPost(String uri, RequestParams params,
+	public RequestHandler<Response> asyncPost(String uri, RequestParams params,
 			AbstractCallback<Response> callback) {
 		// TODO Auto-generated method stub
-		return this.asyncPost(uri, params, callback, null);
-	}
-
-	@Override
-	public <T> Future<T> asyncPost(String uri, RequestParams params,
-			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
-		// TODO Auto-generated method stub
-		Future<T> future = null;
+		RequestHandler<Response> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
 			if (params != null) {
 				post.setEntity(params.createFormEntity());
 			}
-			future = this.freService.execute(post.build(),
-					HttpClientContext.create(),
-					new HttpEntityProcessResponseHandler<T>(processor),
-					callback);
+			future = new RequestHandler<Response>(this.freService.execute(
+					post.build(), HttpClientContext.create(),
+					new DefaultResponseHandler(), callback));
 		}
 		return future;
 	}
 
 	@Override
-	public <T, V> Future<T> asyncPost(String uri, RequestParams params,
-			AbstractCallback<T> callback, HttpResponseParser<V> parser,
-			Processor<T, V> processor) {
+	public <T> RequestHandler<T> asyncPost(String uri, RequestParams params,
+			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
 		// TODO Auto-generated method stub
-		Future<T> future = null;
+		WeakReference<AbstractCallback<T>> callbackReference = new WeakReference<AbstractCallback<T>>(
+				callback);
+		callback = null;
+		WeakReference<HttpEntityProcessor<T>> processorReference = new WeakReference<HttpEntityProcessor<T>>(
+				processor);
+		processor = null;
+		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
 			if (params != null) {
 				post.setEntity(params.createFormEntity());
 			}
-			future = this.freService.execute(post.build(),
+			future = new RequestHandler<T>(this.freService.execute(
+					post.build(),
 					HttpClientContext.create(),
-					new CommonProcessResponseHandler<T, V>(parser, processor),
-					callback);
+					new HttpEntityProcessResponseHandler<T>(processorReference
+							.get()), callbackReference.get()));
 		}
 		return future;
 	}
 
 	@Override
-	public void cancel(Future<?> future) {
+	public <T, V> RequestHandler<T> asyncPost(String uri, RequestParams params,
+			AbstractCallback<T> callback, HttpResponseParser<V> parser,
+			Processor<T, V> processor) {
+		// TODO Auto-generated method stub
+		RequestHandler<T> future = null;
+		if (!this.isClosed()) {
+			RequestBuilder post = RequestBuilder.post().setUri(uri);
+			if (params != null) {
+				post.setEntity(params.createFormEntity());
+			}
+			future = new RequestHandler<T>(this.freService.execute(
+					post.build(), HttpClientContext.create(),
+					new CommonProcessResponseHandler<T, V>(parser, processor),
+					callback));
+		}
+		return future;
+	}
+
+	@Override
+	public void cancel(RequestHandler<?> future) {
 		// TODO Auto-generated method stub
 		if (future != null && !future.isCancelled() && !future.isDone()) {
 			future.cancel(true);
@@ -196,10 +207,10 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	@Override
-	public void cancel(List<Future<?>> futureList) {
+	public void cancel(List<RequestHandler<?>> futureList) {
 		// TODO Auto-generated method stub
 		if (futureList != null) {
-			for (Future<?> future : futureList) {
+			for (RequestHandler<?> future : futureList) {
 				this.cancel(future);
 			}
 		}

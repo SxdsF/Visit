@@ -1,9 +1,9 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.service;
 
 import java.util.concurrent.ExecutorService;
 import org.apache.http.client.HttpClient;
 
-import com.sxdsf.visit.impl.AsyncNetworkServiceImpl;
+import com.sxdsf.visit.service.impl.AsyncNetworkServiceImpl;
 
 public class AsyncNetworkServiceBuilder {
 	private HttpClient client;

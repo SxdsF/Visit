@@ -1,9 +1,11 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.service;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 import com.sxdsf.visit.callback.AbstractCallback;
+import com.sxdsf.visit.common.RequestHandler;
+import com.sxdsf.visit.common.RequestParams;
+import com.sxdsf.visit.common.Response;
 import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;
@@ -25,7 +27,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the callback of this method.
 	 * @return the default response of this method.
 	 */
-	public Future<Response> asyncGet(String uri,
+	public RequestHandler<Response> asyncGet(String uri,
 			AbstractCallback<Response> callback);
 
 	/**
@@ -39,7 +41,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the callback of this method.
 	 * @return the default response of this method.
 	 */
-	public Future<Response> asyncGet(String uri, RequestParams params,
+	public RequestHandler<Response> asyncGet(String uri, RequestParams params,
 			AbstractCallback<Response> callback);
 
 	/**
@@ -53,8 +55,8 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T> Future<T> asyncGet(String uri, AbstractCallback<T> callback,
-			HttpEntityProcessor<T> processor);
+	public <T> RequestHandler<T> asyncGet(String uri,
+			AbstractCallback<T> callback, HttpEntityProcessor<T> processor);
 
 	/**
 	 * The same as above.
@@ -69,8 +71,9 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T, V> Future<T> asyncGet(String uri, AbstractCallback<T> callback,
-			HttpResponseParser<V> parser, Processor<T, V> processor);
+	public <T, V> RequestHandler<T> asyncGet(String uri,
+			AbstractCallback<T> callback, HttpResponseParser<V> parser,
+			Processor<T, V> processor);
 
 	/**
 	 * The same as above.
@@ -85,7 +88,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T> Future<T> asyncGet(String uri, RequestParams params,
+	public <T> RequestHandler<T> asyncGet(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpEntityProcessor<T> processor);
 
 	/**
@@ -103,7 +106,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T, V> Future<T> asyncGet(String uri, RequestParams params,
+	public <T, V> RequestHandler<T> asyncGet(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpResponseParser<V> parser,
 			Processor<T, V> processor);
 
@@ -118,7 +121,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the callback of this method.
 	 * @return the default response of this method.
 	 */
-	public Future<Response> asyncPost(String uri, RequestParams params,
+	public RequestHandler<Response> asyncPost(String uri, RequestParams params,
 			AbstractCallback<Response> callback);
 
 	/**
@@ -134,7 +137,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T> Future<T> asyncPost(String uri, RequestParams params,
+	public <T> RequestHandler<T> asyncPost(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpEntityProcessor<T> processor);
 
 	/**
@@ -152,7 +155,7 @@ public interface AsyncNetworkService extends NetworkService {
 	 *            the response processor.
 	 * @return the value of your custom.
 	 */
-	public <T, V> Future<T> asyncPost(String uri, RequestParams params,
+	public <T, V> RequestHandler<T> asyncPost(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpResponseParser<V> parser,
 			Processor<T, V> processor);
 
@@ -161,12 +164,12 @@ public interface AsyncNetworkService extends NetworkService {
 	 * 
 	 * @param future
 	 */
-	public void cancel(Future<?> future);
+	public void cancel(RequestHandler<?> future);
 
 	/**
 	 * You can cancel a request's list in this method.
 	 * 
 	 * @param futureList
 	 */
-	public void cancel(List<Future<?>> futureList);
+	public void cancel(List<RequestHandler<?>> futureList);
 }

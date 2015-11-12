@@ -1,5 +1,7 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.service;
 
+import com.sxdsf.visit.common.RequestParams;
+import com.sxdsf.visit.common.Response;
 import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;

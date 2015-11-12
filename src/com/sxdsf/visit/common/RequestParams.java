@@ -1,4 +1,4 @@
-package com.sxdsf.visit;
+package com.sxdsf.visit.common;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
