@@ -2,15 +2,20 @@ package com.sxdsf.visit.callback;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
 public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 
-	protected final Handler handler;
+	private final Handler handler;
 	private final AtomicInteger currentStatus = new AtomicInteger(
 			Status.INITIAL.getStatusCode());
+	private final AtomicLong scheduled = new AtomicLong(-1);
+	private final AtomicLong started = new AtomicLong(-1);
+	private final AtomicLong ended = new AtomicLong(-1);
 
 	public AbstractCallback() {
 		// 20151110 sunbowen 默认的采用main looper来初始化handler，回调消息就可以在UI线程（主线程）执行。
@@ -23,41 +28,52 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 	}
 
 	@Override
-	public void completed(T result) {
+	public final void onScheduled(long scheduledTime) {
+		// TODO Auto-generated method stub
+		scheduled.set(scheduledTime);
+	}
+
+	@Override
+	public final void onStarted(long startedTime) {
+		// TODO Auto-generated method stub
+		started.set(startedTime);
+	}
+
+	@Override
+	public final void onEnded(long endedTime) {
+		// TODO Auto-generated method stub
+		ended.set(endedTime);
+		// 20151109 sunbowen 在此发送完成的消息
+		this.sendEvent(Event.COMPLETED, null);
+	}
+
+	@Override
+	public final void completed(T result) {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送成功的消息
 		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
 				Status.ISCOMPLETED.getStatusCode())) {
 			this.<T> sendEvent(Event.SUCCESS, result);
-
-			// 20151109 sunbowen 在此发送完成的消息
-			this.sendEvent(Event.COMPLETED, null);
 		}
 	}
 
 	@Override
-	public void failed(Exception ex) {
+	public final void failed(Exception ex) {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送失败的消息
 		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
 				Status.ISFAILED.getStatusCode())) {
 			this.<Exception> sendEvent(Event.FAILURE, ex);
-
-			// 20151109 sunbowen 在此发送完成的消息
-			this.sendEvent(Event.COMPLETED, null);
 		}
 	}
 
 	@Override
-	public void cancelled() {
+	public final void cancelled() {
 		// TODO Auto-generated method stub
 		// 20151109 sunbowen 在此发送取消的消息
 		if (this.currentStatus.compareAndSet(Status.INITIAL.getStatusCode(),
 				Status.ISCANCELLED.getStatusCode())) {
 			this.sendEvent(Event.CANCELLED, null);
-
-			// 20151109 sunbowen 在此发送完成的消息
-			this.sendEvent(Event.COMPLETED, null);
 		}
 	}
 
@@ -86,7 +102,8 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 					this.onCancelled();
 					break;
 				case Event.COMPLETED:
-					this.onFinish();
+					this.onFinish(this.ended.get() - this.scheduled.get(),
+							this.ended.get() - this.started.get());
 					break;
 				}
 			}

@@ -1,11 +1,11 @@
 package com.sxdsf.visit.common;
 
-import org.apache.http.impl.client.HttpRequestFutureTask;
+import com.sxdsf.visit.service.executor.AsyncNetworkFutureTask;
 
 public class RequestHandler<V> {
-	private final HttpRequestFutureTask<V> futureTask;
+	private final AsyncNetworkFutureTask<V> futureTask;
 
-	public RequestHandler(HttpRequestFutureTask<V> futureTask) {
+	public RequestHandler(AsyncNetworkFutureTask<V> futureTask) {
 		this.futureTask = futureTask;
 	}
 

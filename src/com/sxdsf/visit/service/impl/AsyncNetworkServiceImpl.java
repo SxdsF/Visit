@@ -10,7 +10,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.apache.http.impl.client.HttpClients;
 import android.util.Log;
 import com.sxdsf.visit.callback.AbstractCallback;
@@ -24,11 +23,12 @@ import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;
 import com.sxdsf.visit.service.AsyncNetworkService;
+import com.sxdsf.visit.service.executor.AsyncNetworkExecutionService;
 import com.sxdsf.visit.utils.ReferenceUtils;
 
 public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 
-	private final FutureRequestExecutionService freService;
+	private final AsyncNetworkExecutionService freService;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
 	private static final String TAG = "AsyncNetworkService";
@@ -46,7 +46,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	}
 
 	public AsyncNetworkServiceImpl(HttpClient client, ExecutorService service) {
-		this.freService = new FutureRequestExecutionService(client, service);
+		this.freService = new AsyncNetworkExecutionService(client, service);
 	}
 
 	@Override
