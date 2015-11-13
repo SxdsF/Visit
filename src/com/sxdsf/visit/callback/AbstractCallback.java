@@ -42,9 +42,11 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 	@Override
 	public final void onEnded(long endedTime) {
 		// TODO Auto-generated method stub
-		ended.set(endedTime);
-		// 20151109 sunbowen 在此发送完成的消息
-		this.sendEvent(Event.COMPLETED, null);
+		// 20151113 sunbowen 保证只设置一次结束时间
+		if (ended.compareAndSet(-1, endedTime)) {
+			// 20151109 sunbowen 在此发送完成的消息
+			this.sendEvent(Event.COMPLETED, null);
+		}
 	}
 
 	@Override
@@ -102,12 +104,24 @@ public abstract class AbstractCallback<T> implements AsyncCallback<T> {
 					this.onCancelled();
 					break;
 				case Event.COMPLETED:
-					this.onFinish(this.ended.get() - this.scheduled.get(),
-							this.ended.get() - this.started.get());
+					this.onFinish(this.countTaskDuration(),
+							this.countNetworkAccessDuration());
 					break;
 				}
 			}
 		}
+	}
+
+	private long countTaskDuration() {
+		return (this.ended.get() > 0 && this.scheduled.get() > 0 && this.ended
+				.get() > this.scheduled.get()) ? this.ended.get()
+				- this.scheduled.get() : 0;
+	}
+
+	private long countNetworkAccessDuration() {
+		return (this.ended.get() > 0 && this.started.get() > 0 && this.ended
+				.get() > this.started.get()) ? this.ended.get()
+				- this.started.get() : 0;
 	}
 
 	private static class ResponseHandler<T> extends Handler {

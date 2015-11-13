@@ -27,7 +27,7 @@ public interface AsyncCallback<T> extends FutureCallback<T> {
 	/**
 	 * Regardless of success or failure,it will invoke this callback method.
 	 */
-	public void onFinish(long taskDurition, long networkAccessDurition);
+	public void onFinish(long taskDuration, long networkAccessDuration);
 
 	/**
 	 * It will invoke this callback method in success.

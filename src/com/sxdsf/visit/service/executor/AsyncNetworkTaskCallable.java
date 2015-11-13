@@ -6,7 +6,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
-
 import com.sxdsf.visit.callback.AsyncCallback;
 
 /**
@@ -76,9 +75,7 @@ class AsyncNetworkTaskCallable<V> implements Callable<V> {
 					metrics.getSuccessfulConnections().increment(started);
 					if (callback != null) {
 						callback.completed(result);
-						if (!cancelled.get()) {
-							callback.onEnded(ended);
-						}
+						callback.onEnded(ended);
 					}
 					return result;
 				} catch (final Exception e) {
@@ -86,9 +83,7 @@ class AsyncNetworkTaskCallable<V> implements Callable<V> {
 					ended = System.currentTimeMillis();
 					if (callback != null) {
 						callback.failed(e);
-						if (!cancelled.get()) {
-							callback.onEnded(ended);
-						}
+						callback.onEnded(ended);
 					}
 					throw e;
 				}
@@ -104,12 +99,11 @@ class AsyncNetworkTaskCallable<V> implements Callable<V> {
 	}
 
 	public void cancel() {
-		if (cancelled.compareAndSet(false, true)) {
-			if (callback != null) {
-				callback.cancelled();
-				ended = System.currentTimeMillis();
-				callback.onEnded(ended);
-			}
+		cancelled.set(true);
+		if (callback != null) {
+			callback.cancelled();
+			ended = System.currentTimeMillis();
+			callback.onEnded(ended);
 		}
 	}
 }
