@@ -24,6 +24,7 @@ import com.sxdsf.visit.parse.impl.HttpResponseParser;
 import com.sxdsf.visit.process.Processor;
 import com.sxdsf.visit.process.impl.HttpEntityProcessor;
 import com.sxdsf.visit.service.AsyncNetworkService;
+import com.sxdsf.visit.utils.ReferenceUtils;
 
 public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 
@@ -59,6 +60,8 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	public RequestHandler<Response> asyncGet(String uri, RequestParams params,
 			AbstractCallback<Response> callback) {
 		// TODO Auto-generated method stub
+		WeakReference<AbstractCallback<Response>> reference = ReferenceUtils
+				.toWeakReference(callback);
 		RequestHandler<Response> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
@@ -71,7 +74,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 			}
 			future = new RequestHandler<Response>(this.freService.execute(
 					get.build(), HttpClientContext.create(),
-					new DefaultResponseHandler(), callback));
+					new DefaultResponseHandler(), reference.get()));
 		}
 		return future;
 	}
@@ -87,6 +90,10 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	public <T> RequestHandler<T> asyncGet(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
 		// TODO Auto-generated method stub
+		WeakReference<AbstractCallback<T>> callbackReference = ReferenceUtils
+				.toWeakReference(callback);
+		WeakReference<HttpEntityProcessor<T>> processorReference = ReferenceUtils
+				.toWeakReference(processor);
 		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
@@ -97,10 +104,11 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 							.toArray(new NameValuePair[paramsList.size()]));
 				}
 			}
-			future = new RequestHandler<T>(this.freService.execute(get.build(),
+			future = new RequestHandler<T>(this.freService.execute(
+					get.build(),
 					HttpClientContext.create(),
-					new HttpEntityProcessResponseHandler<T>(processor),
-					callback));
+					new HttpEntityProcessResponseHandler<T>(processorReference
+							.get()), callbackReference.get()));
 		}
 		return future;
 	}
@@ -119,6 +127,12 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 			AbstractCallback<T> callback, HttpResponseParser<V> parser,
 			Processor<T, V> processor) {
 		// TODO Auto-generated method stub
+		WeakReference<AbstractCallback<T>> callbackReference = ReferenceUtils
+				.toWeakReference(callback);
+		WeakReference<HttpResponseParser<V>> paeserReference = ReferenceUtils
+				.toWeakReference(parser);
+		WeakReference<Processor<T, V>> processorReference = ReferenceUtils
+				.toWeakReference(processor);
 		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder get = RequestBuilder.get().setUri(uri);
@@ -129,10 +143,12 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 							.toArray(new NameValuePair[paramsList.size()]));
 				}
 			}
-			future = new RequestHandler<T>(this.freService.execute(get.build(),
+			future = new RequestHandler<T>(this.freService.execute(
+					get.build(),
 					HttpClientContext.create(),
-					new CommonProcessResponseHandler<T, V>(parser, processor),
-					callback));
+					new CommonProcessResponseHandler<T, V>(paeserReference
+							.get(), processorReference.get()),
+					callbackReference.get()));
 		}
 		return future;
 	}
@@ -141,6 +157,8 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	public RequestHandler<Response> asyncPost(String uri, RequestParams params,
 			AbstractCallback<Response> callback) {
 		// TODO Auto-generated method stub
+		WeakReference<AbstractCallback<Response>> reference = ReferenceUtils
+				.toWeakReference(callback);
 		RequestHandler<Response> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
@@ -149,7 +167,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 			}
 			future = new RequestHandler<Response>(this.freService.execute(
 					post.build(), HttpClientContext.create(),
-					new DefaultResponseHandler(), callback));
+					new DefaultResponseHandler(), reference.get()));
 		}
 		return future;
 	}
@@ -158,12 +176,10 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 	public <T> RequestHandler<T> asyncPost(String uri, RequestParams params,
 			AbstractCallback<T> callback, HttpEntityProcessor<T> processor) {
 		// TODO Auto-generated method stub
-		WeakReference<AbstractCallback<T>> callbackReference = new WeakReference<AbstractCallback<T>>(
-				callback);
-		callback = null;
-		WeakReference<HttpEntityProcessor<T>> processorReference = new WeakReference<HttpEntityProcessor<T>>(
-				processor);
-		processor = null;
+		WeakReference<AbstractCallback<T>> callbackReference = ReferenceUtils
+				.toWeakReference(callback);
+		WeakReference<HttpEntityProcessor<T>> processorReference = ReferenceUtils
+				.toWeakReference(processor);
 		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
@@ -184,6 +200,12 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 			AbstractCallback<T> callback, HttpResponseParser<V> parser,
 			Processor<T, V> processor) {
 		// TODO Auto-generated method stub
+		WeakReference<AbstractCallback<T>> callbackReference = ReferenceUtils
+				.toWeakReference(callback);
+		WeakReference<HttpResponseParser<V>> paeserReference = ReferenceUtils
+				.toWeakReference(parser);
+		WeakReference<Processor<T, V>> processorReference = ReferenceUtils
+				.toWeakReference(processor);
 		RequestHandler<T> future = null;
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
@@ -191,9 +213,11 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 				post.setEntity(params.createFormEntity());
 			}
 			future = new RequestHandler<T>(this.freService.execute(
-					post.build(), HttpClientContext.create(),
-					new CommonProcessResponseHandler<T, V>(parser, processor),
-					callback));
+					post.build(),
+					HttpClientContext.create(),
+					new CommonProcessResponseHandler<T, V>(paeserReference
+							.get(), processorReference.get()),
+					callbackReference.get()));
 		}
 		return future;
 	}
