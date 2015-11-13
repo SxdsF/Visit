@@ -163,7 +163,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
 			if (params != null) {
-				post.setEntity(params.createFormEntity());
+				post.setEntity(params.createEntity());
 			}
 			future = new RequestHandler<Response>(this.freService.execute(
 					post.build(), HttpClientContext.create(),
@@ -184,7 +184,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
 			if (params != null) {
-				post.setEntity(params.createFormEntity());
+				post.setEntity(params.createEntity());
 			}
 			future = new RequestHandler<T>(this.freService.execute(
 					post.build(),
@@ -210,7 +210,7 @@ public class AsyncNetworkServiceImpl implements AsyncNetworkService {
 		if (!this.isClosed()) {
 			RequestBuilder post = RequestBuilder.post().setUri(uri);
 			if (params != null) {
-				post.setEntity(params.createFormEntity());
+				post.setEntity(params.createEntity());
 			}
 			future = new RequestHandler<T>(this.freService.execute(
 					post.build(),

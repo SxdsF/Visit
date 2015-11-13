@@ -151,7 +151,7 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 			try {
 				RequestBuilder post = RequestBuilder.post().setUri(uri);
 				if (params != null) {
-					post.setEntity(params.createFormEntity());
+					post.setEntity(params.createEntity());
 				}
 				response = BasicMethods.request(this.client, post.build(),
 						new DefaultResponseHandler(),
@@ -176,7 +176,7 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 			try {
 				RequestBuilder post = RequestBuilder.post().setUri(uri);
 				if (params != null) {
-					post.setEntity(params.createFormEntity());
+					post.setEntity(params.createEntity());
 				}
 				response = BasicMethods.request(this.client, post.build(),
 						new HttpEntityProcessResponseHandler<T>(processor),
@@ -201,7 +201,7 @@ public class SyncNetworkServiceImpl implements SyncNetworkService {
 			try {
 				RequestBuilder post = RequestBuilder.post().setUri(uri);
 				if (params != null) {
-					post.setEntity(params.createFormEntity());
+					post.setEntity(params.createEntity());
 				}
 				response = BasicMethods.request(this.client, post.build(),
 						new CommonProcessResponseHandler<T, V>(parser,
